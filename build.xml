@@ -6,10 +6,17 @@
               as the first entry and export the buildfile again. --><project basedir="." default="build" name="TestWebApp">
     <property environment="env"/>
     <property name="ECLIPSE_HOME" value="c:/eclipse/"/>
+  	<property name="DEPLOYMENT_HOME" value="C:/apache-tomcat-8.0.9/webapps/"/>
     <property name="web.dir" value="."/>
     <property name="debuglevel" value="source,lines,vars"/>
     <property name="target" value="1.7"/>
     <property name="source" value="1.7"/>
+  	<property name="builder" value="Ant"/>
+	<tstamp prefix="build-info">
+		<format property="current-date" pattern="ddMMyyyy" locale="en" />
+		<format property="current-time" pattern="HHmmss" locale="en" />
+		<format property="year-month-day" pattern="yyyy-MM-dd" locale="en" />
+	</tstamp>
     <path id="Apache Tomcat v8.0 [Apache Tomcat v8.0].libraryclasspath">
         <pathelement location="c:/apache-tomcat-8.0.9/lib/annotations-api.jar"/>
         <pathelement location="c:/apache-tomcat-8.0.9/lib/catalina-ant.jar"/>
@@ -92,11 +99,29 @@
   		    		<include name="*.war"/>
   				</fileset>
   			</delete>
-  	    	<war destfile="TestWebApp.war" webxml="${web.dir}/WebContent/WEB-INF/web.xml">
+  	    	<war destfile="TestWebApp_${build-info.current-date}_${build-info.current-time}.war" webxml="${web.dir}/WebContent/WEB-INF/web.xml">
   	    		<fileset dir="${web.dir}/WebContent">
   	    		      <include name="**/*.*"/>
   	    		 </fileset>
   	    		<classes dir="build/classes"></classes>
+  	    		<manifest>
+					<attribute name="Built-By" value="${builder}" />
+					<attribute name="Built-On" value="${build-info.current-date}" />
+					<attribute name="Built-At" value="${build-info.current-time}" />
+    			</manifest>
   	    	</war>
   	    </target>
+              	
+    <target name="deploy-war">
+    	<delete>
+			<fileset dir="${DEPLOYMENT_HOME}">
+	    		<include name="*.war"/>
+			</fileset>
+		</delete>
+    	<copy todir="${DEPLOYMENT_HOME}" overwrite="true" verbose="true">
+    	    <fileset dir=".">
+    	        <include name="*.war" />
+    	    </fileset>
+    	</copy>
+ 	</target>
 </project>
