@@ -112,11 +112,7 @@
   	    	</war>
   	    </target>
               	
-<<<<<<< HEAD
     <target depends="build" name="deploy-war">
-=======
-    <target name="deploy-war">
->>>>>>> origin/master
     	<delete>
 			<fileset dir="${DEPLOYMENT_HOME}">
 	    		<include name="*.war"/>
